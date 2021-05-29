@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Vue.js Fundamentals | DevMarketer-->
+    <!--part 10: https://www.youtube.com/watch?v=KT-yhTnIf_k&index=10&list=PLwAKR305CRO_1yAao-8aZiQnBqJeyng4O -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vue.js Tutorial | API Example</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="p10.css">
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3">
+            <div class="lead-form">
+              <h1 class="text-center">Fill Out This Form</h1>
+              <hr />
+              <div class="row">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Starting Zip" v-model="startingZip">
+                  <span class="city-span">{{startingCity}}</span>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Ending Zip" v-model="endingZip">
+                  <span class="city-span">{{endingCity}}</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <button class="btn btn-primary btn-block" id="submit-form">Submit (no action in this app)</button>
+                </div>
+              </div>
+            </div><!-- end of .lead-form -->
+          </div> <!-- end of .col-md-6.col-md-offset-3 -->
+        </div> <!-- end of .row -->
+      </div> <!-- end of .container -->
+    </div> <!-- end of #app -->
+  </body>
+
+  <script src="https://unpkg.com/vue@2.2.5"></script>
+  <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script> <!--axios: biblioteka http - GET, POST requests, AJAX -->
+  <script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script><!--lodash: dodatkowe funkcje, których brak w js a są np. w php-->
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        startingZip: '',
+        startingCity: '',
+        endingZip: '',
+        endingCity: ''
+      },
+      watch: {  //poniższy watch obserwuje propercję startingZip - i jeśli zajdzie w niej jakaś zmiana uruchomi funkcję
+        startingZip: _.debounce(function() {
+          this.startingCity = ''
+          if (this.startingZip.length == 5) {
+            this.lookupStartingZip()
+          }
+        }, 500),
+        //_.debounce(function() {}, 500) - funkcja z biblioteki lodash, która czeka x ms przed wywołaniem podanej funkcji
+        //tu by użytkownik miał chwilę na ew. poprawę wpisywanego kodu przed wysłaniem żądania do API
+        //żądanie API zostanie wysłane 0,5s po wprowadzeniu 5-tej cyfry kodu pocztowego
+        endingZip: function() {
+          this.endingCity = ''
+          if (this.endingZip.length == 5) {
+            this.lookupEndingZip()
+          }
+        } //ta fn bez _.debounce - nie ma możliwości poprawy źle wpisanego kodu
+      },
+      methods: {
+        lookupStartingZip: function() {
+          this.startingCity = 'Searching...'
+          var that = this
+          axios.get('http://ziptasticapi.com/' + this.startingZip) //AJAX by axios: axios.get('url').then(fn-ok(){}).catch(fn-error)
+                .then(function(response) {
+                  that.startingCity = response.data.city + ', ' + response.data.state
+                })
+                .catch(function(error) {
+                  that.startingCity = 'Invalid Zipcode'
+                })
+        },
+        //API: http://ziptasticapi.com/90210 - zwraca JSON: {"country":"US","state":"CA","city":"BEVERLY HILLS"}
+        lookupEndingZip: function() {
+          this.endingCity = 'Searching...'
+          var that = this
+          axios.get('http://ziptasticapi.com/' + this.endingZip) //AJAX call by axios: axios.get('url').then(fn-ok(){}).catch(fn-error)
+                .then(function(response) {
+                  that.endingCity = response.data.city + ', ' + response.data.state
+                })
+                .catch(function(error) {
+                  that.endingCity = 'Invalid Zipcode'
+                })
+        }
+      }
+    })
+  </script>
+</html>

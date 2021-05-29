@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Vue.js Fundamentals | DevMarketer-->
+    <!--part 3: https://www.youtube.com/watch?v=ZCweh0Q8tyE&list=PLwAKR305CRO_1yAao-8aZiQnBqJeyng4O&index=3 -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vue.JS Tutorial | Directives: v-text, v-html, v-show, v-if/v-else, v-pre, v-once, v-cloak</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+      [v-cloak] {
+        display: none
+      };
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1 v-cloak>{{message}}</h1> 
+      <!--<h1 v-else>You have NOT viewed this page</h1>-->
+      <!--inne:
+          <h1>{{message}}</h1> - jeśli potem (albo np. w konsoli) zmienimy app.message="New greeting" - zawartość tego taga uaktualni się
+          <h1 v-text="message"></h1>, 
+              v-html="intro", 
+              v-show="viewed" (dla false nie usuwa z DOM jak v-if, tylko nadaje display:none)
+              v-if="viewed">You have viewed this page
+              v-else>You have NOT viewed this page
+          <h1 v-pre>{{message}}</h1> - nie interpretuje {{...}}, tylko po prostu wyświetla to co jest w tagu (wyświetli '{{message}}')
+              v-once>{{message}}</h1> - interpretuje, ale tylko jeden raz, późniejsze zmiany np. app.message="New greeting" będą bez efektu
+              v-cloak>{{message}}</h1> - na czas inicjowania vue (ułamek sekundy) gdy na ekranie widać "{{..}}" nadaje znacznikowi "klasę" [v-cloak], a potem ją usuwa - dzięki temu można użyć css'ów aby ukryć "{{..}}" i pokazać dopiero zinterpretowany element
+      -->
+    </div>
+  </body>
+  
+  <script src="https://unpkg.com/vue@2.2.5"></script>
+  
+  <script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue World',
+            intro: 'Welcome to the Tutorial <small>It is all about Vue.js</small>',
+            viewed: false,
+            viewed2: true
+        }
+    });
+  </script>
+</html>

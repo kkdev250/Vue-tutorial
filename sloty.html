@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vue.JS Komponetny, sloty</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <template id="componentTemplate"> <!--to child template - i dostęp od child scope! (z wyjątkiem slotów - tam tylko do parent scope)-->
+        <div><!--ten div musi być - w komponencie może być tylko jeden root element!-->
+            <p>child component (mamy dostęp do child scope: {{childText}}), część przed slotami (będzie 5 slotów:)</p>
+            <slot></slot> <!--default slot (we wszystkich slotach jest dostęp tylko do parent scope, nie ma dostępu do child scope!)-->
+            <slot name="slot1"></slot> <!--named slot--> 
+            <slot name="slot2"></slot> <!--named slot-->
+            <slot name="slot3"><p>ten slot (slot3) ma default content: wyświetli się, jeśli parent nie wpisze nic do tego slotu</p></slot>
+            <slot name="slot4" v-bind:child_var="childText"></slot> <!--to scoped slot, będzie tu też dostęp do zmiennej z child scope!-->
+            <p>to wciąż child component - część za slotami</p>
+        </div>
+    </template>
+  
+    <div id="app"> <!--parent - i dostęp do parent scope!: -->
+      <h1>{{message}}</h1>
+      <my-component> <!--tu też nadal dostęp do parent scope, nie ma dostępu do my-component scope!!! (no, jest - przez scope slots) -->
+        <p>to trafi do default'owego slotu, mamy dostęp do parent scope: {{parentText}}</p>
+        <div slot="slot2"><p>to trafi do slotu o nazwie slot2</p></div> <!--wyrenderuje się: <div><p></p></div>-->
+        <template slot="slot1"><p>to trafi do slotu o nazwie slot1</p></template> <!--wyrenderuje się: <p></p>-->
+        <!--do slotu 3 nic nie wpisujemy-->
+        <div slot="slot4" slot-scope="slot4_scope"><p>slot 4: {{slot4_scope.child_var}} and {{parentText}}</p></div>
+        <p>to też trafi do defaultowego slotu</p> 
+      </my-component>
+    </div>
+  </body>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script>
+    Vue.component('my-component', {
+        template: '#componentTemplate',
+        data: function () {
+            return {
+                childText: 'CHILD\'S TEXT'
+            }
+        },
+        methods: {
+        }
+    }); //pamiętać: rejestracja komponentu (globalna) musi być PRZED stworzeniem instancji Vue!
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'PARENT',
+            parentText: 'PARENT\'S TEXT'
+        }
+    });
+    
+  </script>
+</html>

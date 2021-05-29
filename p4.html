@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Vue.js Fundamentals | DevMarketer-->
+    <!--part 4: https://www.youtube.com/watch?v=7ZjNQ92Pl3c&index=4&list=PLwAKR305CRO_1yAao-8aZiQnBqJeyng4O -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vue.JS Tutorial | Attributes Binding: v-bind:attr / :attr</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <div id="app">
+      <h1 v-bind:title="title">{{message}}</h1> <!-- v-bind:attr - wiązanie atrybutu taga z danymi vue  --> 
+ <!--  ===  <h1 :title="title">{{message}}</h1> --> <!-- można pominąć v-bind i zostawić :attr=".." --> 
+      <img :src="url" :alt="title" :title="title" />
+ <!--  === <img v-bind:src="url" v-bind:alt="title" v-bind:title="title" /> -->
+ <!--  UWAGA: nie zadziała <img src={{url}} /> dlatego potrzebne jest v-bind, {{...}} NIE działa we wnętrzu tagów -->
+    </div>
+  </body>
+  
+  <script src="https://unpkg.com/vue@2.2.5"></script>
+  
+  <script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: "hello world",
+            title: "You loaded the page on " + new Date(),
+            url: "http://vuejs.org/images/logo.png"
+        }
+    });
+  </script>
+</html>
